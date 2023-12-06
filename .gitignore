@@ -1,0 +1,10 @@
+/data
+/wandb
+/.vscode
+/data
+/datasets
+/checkpoints
+/backbones/__pycache__
+/methods/__pycache__
+/outputs
+/utils/__pycache__
