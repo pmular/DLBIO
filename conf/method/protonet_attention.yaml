@@ -1,0 +1,7 @@
+defaults:
+  - meta_base
+
+cls:
+  _target_: methods.protonet_attention.ProtoNetAttention
+
+name: protonet_attention
