@@ -4,4 +4,10 @@ defaults:
 cls:
   _target_: methods.protonet_sot.ProtoNetSOT
 
+  self_ot:
+    reg: ???
+    diag_weight: ???
+    tol: ???
+    tau: ???
+
 name: protonet_sot

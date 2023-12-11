@@ -15,13 +15,14 @@ def cosine_cost(x, y):
 
     
 class SelfOT():
-    
-    def __init__(self, metric=quadratic_cost, reg=0.1, iterations=10, diag_weight=100):
+    def __init__(self, tol, tau, metric=quadratic_cost, reg=0.1, iterations=10, diag_weight=100):
         super(SelfOT).__init__()
         self.metric =metric
         self.reg = reg 
         self.iterations = iterations 
         self.diag_weight = diag_weight 
+        self.tol = tol
+        self.tau = tau
 
 
     def solver(self, cost, tol=1e-6, tau=100):
@@ -64,7 +65,7 @@ class SelfOT():
     def __call__(self, x):
         cost = self.metric(x, x)
         masked_cost = self.masking(cost)
-        embedding = self.solver(masked_cost)
+        embedding = self.solver(masked_cost, self.tol, self.tau)
         return embedding
 
 
