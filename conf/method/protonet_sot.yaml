@@ -5,9 +5,11 @@ cls:
   _target_: methods.protonet_sot.ProtoNetSOT
 
   self_ot:
-    reg: ???
-    diag_weight: ???
-    tol: ???
-    tau: ???
+    reg: 0.1
+    diag_weight: 100
+    tol: 1e-6
+    tau: 100
 
 name: protonet_sot
+
+stop_epoch: 10
