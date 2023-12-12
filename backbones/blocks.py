@@ -339,6 +339,13 @@ def full_block(in_features, out_features, dropout):
         nn.Dropout(p=dropout),
     )
 
+def custom_block(in_features, out_features, dropout):
+    return nn.Sequential(
+        nn.Linear(in_features, out_features),
+        nn.ReLU(),
+        nn.Dropout(p=dropout),
+    )
+
 
 def glorot(tensor):
     if tensor is not None:
@@ -352,6 +359,13 @@ def full_block_fw(in_features, out_features, dropout):
     return nn.Sequential(
         Linear_fw(in_features, out_features),
         BatchNorm1d_fw(out_features),
+        nn.ReLU(),
+        nn.Dropout(p=dropout),
+    )
+
+def custom_block_fw(in_features, out_features, dropout):
+    return nn.Sequential(
+        nn.Linear_fw(in_features, out_features),
         nn.ReLU(),
         nn.Dropout(p=dropout),
     )

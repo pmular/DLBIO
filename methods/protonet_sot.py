@@ -11,9 +11,9 @@ from methods.protonet import ProtoNet
 
 
 class ProtoNetSOT(ProtoNet):
-    def __init__(self, backbone, n_way, n_support, cfg):
+    def __init__(self, backbone, n_way, n_support, self_ot):
         super(ProtoNetSOT, self).__init__(backbone, n_way, n_support)
-        self.transform = SelfOT(reg=cfg.self_ot.reg, diag_weight=cfg.self_ot.diag_weight, tol=cfg.self_ot.tol, tau=cfg.self_ot.tau)
+        self.transform = SelfOT(reg=self_ot.reg, diag_weight=self_ot.diag_weight, tol=self_ot.tol, tau=self_ot.tau)
 
     
     def parse_feature(self, x, is_feature):
