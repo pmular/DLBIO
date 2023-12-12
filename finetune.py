@@ -13,7 +13,7 @@ def train():
     # Construct the command to run `run.py` with the given config
     command = [
         "python3", "run.py",
-        "exp.name=test_finetune",
+        "exp.name=finetune_sweeps",
         "method=protonet_sot",
         "dataset=swissprot",
         f"method.cls.self_ot.reg={config['reg']}",
@@ -52,7 +52,7 @@ def main():
         }
     }
 
-    wandb.login()
+    wandb.login(key="ab7685e24cbba84d7b9ee9574c68a4fa7d0ac965")
     sweep_id = wandb.sweep(sweep_config, project='DL for Bio', entity='kenjitetard0')
 
     # Run the sweep

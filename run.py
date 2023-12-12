@@ -8,21 +8,15 @@ from prettytable import PrettyTable
 from datasets.cell.tabula_muris import *
 from utils.io_utils import get_resume_file, hydra_setup, fix_seed, model_to_dict, opt_to_dict, get_model_file
 
-import pdb
-
 
 def initialize_dataset_model(cfg):
     # Instantiate train dataset as specified in dataset config under simple_cls or set_cls
-    
     if cfg.method.type == "baseline":
         train_dataset = instantiate(cfg.dataset.simple_cls, batch_size=cfg.method.train_batch, mode='train')
     elif cfg.method.type == "meta":
         train_dataset = instantiate(cfg.dataset.set_cls, mode='train')
     else:
         raise ValueError(f"Unknown method type: {cfg.method.type}")
-
-    
-
     train_loader = train_dataset.get_data_loader()
 
     # Instantiate val dataset as specified in dataset config under simple_cls or set_cls
@@ -33,14 +27,13 @@ def initialize_dataset_model(cfg):
         val_dataset = instantiate(cfg.dataset.set_cls, mode='val')
     val_loader = val_dataset.get_data_loader()
 
-    # For MAML (and other optimization-based methods), need to instantiate l layers with fast weight
+    # For MAML (and other optimization-based methods), need to instantiate backbone layers with fast weight
     if cfg.method.fast_weight:
         backbone = instantiate(cfg.backbone, x_dim=train_dataset.dim, fast_weight=True)
     else:
         backbone = instantiate(cfg.backbone, x_dim=train_dataset.dim)
 
     # Instantiate few-shot method class
-    
     model = instantiate(cfg.method.cls, backbone=backbone)
 
     if torch.cuda.is_available():
@@ -64,11 +57,7 @@ def run(cfg):
 
     fix_seed(cfg.exp.seed)
 
-    
-    
     train_loader, val_loader, model = initialize_dataset_model(cfg)
-
-    
 
     if cfg.mode == "train":
         model = train(train_loader, val_loader, model, cfg)
@@ -101,7 +90,6 @@ def train(train_loader, val_loader, model, cfg):
 
     if not os.path.isdir(cp_dir):
         os.makedirs(cp_dir)
-    
     wandb.init(project=cfg.wandb.project, entity=cfg.wandb.entity, config=OmegaConf.to_container(cfg, resolve=True),
                group=cfg.exp.name, settings=wandb.Settings(start_method="thread"), mode=cfg.wandb.mode)
     wandb.define_metric("*", step_metric="epoch")
@@ -134,7 +122,7 @@ def train(train_loader, val_loader, model, cfg):
             model.eval()
             acc = model.test_loop(val_loader)
             print(f"Epoch {epoch}: {acc:.2f}")
-            wandb.log({'acc/val': acc})
+            wandb.log({'accuracy': acc})
 
             if acc > max_acc:
                 print("best model! save...")
@@ -191,6 +179,10 @@ def test(cfg, model, split):
 
 
 if __name__ == '__main__':
+    import wandb
+
     hydra_setup()
     run()
-    wandb.finish()
+    print("finish call to run.py")
+    #wandb.finish()
+
