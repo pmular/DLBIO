@@ -2,7 +2,7 @@ defaults:
   - meta_base
 
 cls:
-  _target_: methods.protonet_sot.ProtoNetSOT
+  _target_: methods.custom_sot.CustomSOT
 
   self_ot:
     reg: 0.05
@@ -10,6 +10,6 @@ cls:
     tol: 1e-6
     tau: 100
 
-name: protonet_sot
+name: custom_sot
 
 stop_epoch: 10

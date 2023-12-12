@@ -10,13 +10,13 @@ def train():
     # Construct the command to run `run.py` with the given config
     command = [
         "python3", "run.py",
-        "exp.name=finetune_sweeps",
+        "exp.name=finetune_sweeps_tm",
         "method=protonet_sot",
-        "dataset=swissprot",
+        "dataset=tabula_muris",
         f"method.cls.self_ot.reg={config['reg']}",
         f"optimizer_cls.lr={config['lr']}",
-        f"backbone.layer_width=[{config['layer_width']}]",
-        f"backbone.depth=[{config['depth']}]",
+        f"backbone.layer_width={config['layer_width']}",
+        f"backbone.depth={config['depth']}",
         f"backbone.dropout={config['dropout']}",
     ]
 
@@ -36,13 +36,13 @@ def main():
         },
         'parameters': {
             'reg': {
-                'values': [0.05, 0.1, 0.15]
+                'values': [0.05, 0.1, 0.2]
             },
             'lr': {
                 'values': [0.005, 0.001, 0.0005]
             },
             'layer_width': {
-                'values': [64, 128, 256]
+                'values': [32, 64, 128, 256]
             },
             'depth': {
                 'values': [1, 2]
