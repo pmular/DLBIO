@@ -7,9 +7,6 @@ def train():
     run = wandb.init(reinit=True)  # This initializes the run and allows reinitialization
     config = run.config
 
-    # Convert the list of layer dimensions to a Hydra-friendly format
-    layer_dim_str = ','.join(map(str, config['layer_dim']))
-
     # Construct the command to run `run.py` with the given config
     command = [
         "python3", "run.py",
@@ -18,7 +15,8 @@ def train():
         "dataset=swissprot",
         f"method.cls.self_ot.reg={config['reg']}",
         f"optimizer_cls.lr={config['lr']}",
-        f"backbone.layer_dim=[{layer_dim_str}]",
+        f"backbone.layer_width=[{config['layer_width']}]",
+        f"backbone.depth=[{config['depth']}]",
         f"backbone.dropout={config['dropout']}",
     ]
 
@@ -31,7 +29,7 @@ def train():
 def main():
     # Define the sweep configuration
     sweep_config = {
-        'method': 'bayes',  # or 'random' or 'bayes'
+        'method': 'random',  # or 'random' or 'bayes'
         'metric': {
             'name': 'accuracy',
             'goal': 'maximize'
@@ -43,8 +41,11 @@ def main():
             'lr': {
                 'values': [0.005, 0.001, 0.0005]
             },
-            'layer_dim': {
-                'values': [[64,64], [256], [128], [128, 128]]
+            'layer_width': {
+                'values': [64, 128, 256]
+            },
+            'depth': {
+                'values': [1, 2]
             },
             'dropout': {
                 'values': [0.0, 0.1, 0.3]
@@ -52,8 +53,8 @@ def main():
         }
     }
 
-    wandb.login(key="ab7685e24cbba84d7b9ee9574c68a4fa7d0ac965")
-    sweep_id = wandb.sweep(sweep_config, project='DL for Bio', entity='kenjitetard0')
+    wandb.login(key="515249130d470758f03aca4f951e814d24ea9ed2")
+    sweep_id = wandb.sweep(sweep_config, project='dlbio', entity='pma3')
 
     # Run the sweep
     wandb.agent(sweep_id, function=train)

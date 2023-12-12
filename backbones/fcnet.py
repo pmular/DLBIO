@@ -6,21 +6,20 @@ from backbones.blocks import full_block, full_block_fw, custom_block, custom_blo
 class FCNet(nn.Module):
     fast_weight = False  # Default
 
-    def __init__(self, x_dim, layer_dim=[64, 64], dropout=0.2, fast_weight=False):
+    def __init__(self, x_dim, layer_width=64, depth=2, dropout=0.2, fast_weight=False):
         super(FCNet, self).__init__()
         self.fast_weight = fast_weight
-
         layers = []
         in_dim = x_dim
-        for dim in layer_dim:
+        for _ in range(depth):
             if self.fast_weight:
-                layers.append(full_block_fw(in_dim, dim, dropout))
+                layers.append(full_block_fw(in_dim, layer_width, dropout))
             else:
-                layers.append(full_block(in_dim, dim, dropout))
-            in_dim = dim
+                layers.append(full_block(in_dim, layer_width, dropout))
+            in_dim = layer_width
 
         self.encoder = nn.Sequential(*layers)
-        self.final_feat_dim = layer_dim[-1]
+        self.final_feat_dim = layer_width
 
     def forward(self, x):
         x = self.encoder(x)
