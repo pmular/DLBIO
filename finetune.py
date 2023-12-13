@@ -29,7 +29,7 @@ def train():
 def main():
     # Define the sweep configuration
     sweep_config = {
-        'method': 'random',  # or 'random' or 'bayes'
+        'method': 'bayes', 
         'metric': {
             'name': 'accuracy',
             'goal': 'maximize'
