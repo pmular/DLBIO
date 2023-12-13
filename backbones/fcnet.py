@@ -26,28 +26,50 @@ class FCNet(nn.Module):
         return x.view(x.size(0), -1)
 
 
-class CustomFCNet(nn.Module):
-    fast_weight = False  # Default
 
+class CustomFCNet(nn.Module):
+    """
+    Parameters:
+        x_dim (int): The size of the input feature dimension.
+        layer_dim (list of int): A list of integers where each integer represents the number of
+                                 neurons in a layer. Default: [64, 64].
+        dropout (float): The dropout rate used for regularization. Default: 0.2.
+        fast_weight (bool, optional): If set to True, uses custom blocks that support fast weight
+                                      adjustments. Default: False.
+    """
     def __init__(self, x_dim, layer_dim=[64, 64], dropout=0.2, fast_weight=False):
         super(CustomFCNet, self).__init__()
         self.fast_weight = fast_weight
 
-        layers = []
-        in_dim = x_dim
+        layers = []  
+        in_dim = x_dim  # Set the initial input dimension to the input feature size.
+        
+        # Iterate through each dimension in layer_dim to create the network layers.
         for dim in layer_dim:
+            # Use a fast weight adjusting block if fast_weight is True.
             if self.fast_weight:
                 layers.append(custom_block_fw(in_dim, dim, dropout))
+            # Otherwise, use a standard fully connected block.
             else:
                 layers.append(custom_block(in_dim, dim, dropout))
-            in_dim = dim
+            in_dim = dim  
 
         self.encoder = nn.Sequential(*layers)
+        # Store the output dimension of the final layer for feature extraction.
         self.final_feat_dim = layer_dim[-1]
 
     def forward(self, x):
-        x = self.encoder(x)
-        return x.view(x.size(0), -1)
+        """
+        Parameters:
+            x (Tensor): The input data tensor
+
+        Returns:
+            Tensor: The output of the network, reshaped to a 2D tensor where the second dimension
+                    is the final feature dimension.
+        """
+        x = self.encoder(x)  
+        return x.view(x.size(0), -1)  
+
 
 
 
